@@ -13,5 +13,5 @@ $ git clone 'url of this repo'
 $ cd study-rbm-ela
 $ python -m venv rbm-ela
 $ . rbm-ela/bin/activate
-$ pip install -r install.txt
+$ pip install -r requirements.txt
 ```

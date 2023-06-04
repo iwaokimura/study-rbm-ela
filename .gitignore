@@ -161,3 +161,7 @@ cython_debug/
 
 # This repo's venv is
 rbm-ela
+
+# Refs should not be redistributed:
+refs/*.pdf
+

@@ -165,3 +165,6 @@ rbm-ela
 # Refs should not be redistributed:
 refs/*.pdf
 
+# MNIST Data
+
+./src/rbm-pytorch/data/*

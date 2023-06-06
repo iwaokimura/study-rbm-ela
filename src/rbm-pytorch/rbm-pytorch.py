@@ -45,7 +45,7 @@ class RBM(torch.nn.Module):
         wx_b = F.linear(v, self.W.t(), self.h_bias)
         hidden_term = wx_b.exp().add(1).log().sum(1)
         rv = (-hidden_term - vbias_term).mean()
-        print(f"debug@free_energy(): rv = {rv}")
+        # print(f"debug@free_energy(): rv = {rv}")
         return(rv)
 
 if __name__ == '__main__':
@@ -63,10 +63,12 @@ if __name__ == '__main__':
         plt.imsave(f, npimg)
 
 
-    rbm = RBM(k = 1)
+    rbm = RBM(k = 5)
     train_op = optim.SGD(rbm.parameters(), 0.1)
 
     batch_size = 64
+    num_epoch = 10
+
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST('./data', 
                        train = True,
@@ -81,7 +83,7 @@ if __name__ == '__main__':
             transform = transforms.Compose([transforms.ToTensor()])),
         batch_size = batch_size
     )
-    for epoch in range(10):
+    for epoch in range(num_epoch):
         loss_list = []
         for _, (data, target) in enumerate(train_loader):
             data = Variable(data.view(-1, 784))

@@ -17,7 +17,7 @@ class RBM(torch.nn.Module):
         self.k = k
 
     def sample_from_p(self, p):
-        return F.sigmoid(torch.sign(p - Variable(torch.rand(p.size()))))
+        return F.relu(torch.sign(p - Variable(torch.rand(p.size()))))
     
     def v_to_h(self, v):
         p_h = F.sigmoid(F.linear(v, self.W.t(), self.h_bias)) # XXX fixme!
@@ -25,7 +25,7 @@ class RBM(torch.nn.Module):
         return p_h, sample_h
     
     def h_to_v(self, h):
-        p_v = F.sigmoid(F.linear(h, self.W.t(), self.v_bias))
+        p_v = F.sigmoid(F.linear(h, self.W, self.v_bias))
         sample_v = self.sample_from_p(p_v)
         return p_v, sample_v
     
@@ -42,15 +42,17 @@ class RBM(torch.nn.Module):
     
     def free_energy(self, v):
         vbias_term = v.mv(self.v_bias)
-        wx_b = F.linear(v, self.W, self.h_tibas)
+        wx_b = F.linear(v, self.W.t(), self.h_bias)
         hidden_term = wx_b.exp().add(1).log().sum(1)
-        return (-hidden_term - vbias_term).mean()
+        rv = (-hidden_term - vbias_term).mean()
+        print(f"debug@free_energy(): rv = {rv}")
+        return(rv)
 
 if __name__ == '__main__':
     import torch.optim as optim
     from torch.autograd import Variable
     from torchvision import datasets, transforms
-    from torchvision.utils import make_grid , save_image
+    from torchvision.utils import make_grid
     import matplotlib.pyplot as plt
 
     def save_show(file_name, img):
@@ -86,7 +88,7 @@ if __name__ == '__main__':
             sample_data = data.bernoulli()
 
             v, v1 = rbm(sample_data)
-            loss = rbm.free_energy(v) - v.free_energy(v1)
+            loss = rbm.free_energy(v) - rbm.free_energy(v1)
             loss_list.append(loss.data)
             train_op.zero_grad()
             loss.backward()
@@ -94,4 +96,4 @@ if __name__ == '__main__':
         print(f"Training loss for epoch {epoch}: {np.mean(loss_list)}")
 
     save_show("real", make_grid(v.view(32, 1, 28, 28).data))
-    save_show("generate", make_grid(v1.view(32, 1, 29, 29).data))
+    save_show("generate", make_grid(v1.view(32, 1, 28, 28).data))

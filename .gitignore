@@ -167,4 +167,4 @@ refs/*.pdf
 
 # MNIST Data
 
-./src/rbm-pytorch/data/*
+src/rbm-pytorch/data/*

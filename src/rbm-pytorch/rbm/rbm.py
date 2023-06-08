@@ -49,3 +49,6 @@ class RBM(torch.nn.Module):
         rv = (-hidden_term - vbias_term).mean()
         # print(f"debug@free_energy(): rv = {rv}")
         return(rv)
+
+    def save(self, path_f):
+        torch.save(self.state_dict(), path_f)

@@ -50,5 +50,7 @@ if __name__ == '__main__':
             train_op.step()
         print(f"Training loss for epoch {epoch}: {np.mean(loss_list)}")
 
+    with open("./rbm_model.dat", "wb") as f:
+        rbm.save(f)
     save_show("real", make_grid(v.view(32, 1, 28, 28).data))
     save_show("generate", make_grid(v1.view(32, 1, 28, 28).data))
